@@ -1,0 +1,19 @@
+{
+  "name": "broetry-blocker-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rate-limited proxy between the Broetry Blocker extension and TypeSafe's Jev model",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "^0.6.0"
+  }
+}

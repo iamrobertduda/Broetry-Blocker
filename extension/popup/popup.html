@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Broetry Blocker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">AI SLOP</div>
+      <label class="switch">
+        <span data-i18n="popupEnabled"></span>
+        <input type="checkbox" id="enabled" />
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+    </header>
+
+    <section class="stats">
+      <div><strong id="today">0</strong> <span data-i18n="statsToday"></span></div>
+      <div class="muted"><span id="total">0</span> <span data-i18n="statsTotal"></span></div>
+    </section>
+
+    <fieldset>
+      <legend data-i18n="popupMode"></legend>
+      <label class="option">
+        <input type="radio" name="mode" value="label" />
+        <span><b data-i18n="modeLabel"></b><small data-i18n="modeLabelHint"></small></span>
+      </label>
+      <label class="option">
+        <input type="radio" name="mode" value="collapse" />
+        <span><b data-i18n="modeCollapse"></b><small data-i18n="modeCollapseHint"></small></span>
+      </label>
+      <label class="option">
+        <input type="radio" name="mode" value="hide" />
+        <span><b data-i18n="modeHide"></b><small data-i18n="modeHideHint"></small></span>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend data-i18n="popupSensitivity"></legend>
+      <div class="segmented">
+        <label><input type="radio" name="sensitivity" value="relaxed" /><span data-i18n="sensitivityRelaxed"></span></label>
+        <label><input type="radio" name="sensitivity" value="normal" /><span data-i18n="sensitivityNormal"></span></label>
+        <label><input type="radio" name="sensitivity" value="strict" /><span data-i18n="sensitivityStrict"></span></label>
+      </div>
+    </fieldset>
+
+    <footer>
+      <div id="quota" class="muted"></div>
+      <div class="muted small" data-i18n="poweredBy"></div>
+    </footer>
+
+    <script src="../src/config.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

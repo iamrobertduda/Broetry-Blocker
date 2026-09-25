@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Feed | LinkedIn</title>
+    <style>
+      body { font-family: sans-serif; background: #f4f2ee; margin: 0; }
+      main { width: 555px; margin: 24px auto; display: grid; gap: 12px; }
+      .feed-shared-update-v2 { background: #fff; border-radius: 8px; box-shadow: 0 0 0 1px #ddd; }
+      .actor { padding: 12px 16px 0; font-weight: 600; }
+      .update-components-text { display: block; padding: 8px 16px 16px; white-space: pre-line; }
+      .social { padding: 8px 16px; border-top: 1px solid #eee; color: #666; }
+    </style>
+  </head>
+  <body>
+    <main id="feed">
+      <div class="feed-shared-update-v2" data-urn="urn:li:activity:1" data-testpost="broetry">
+        <div class="actor">Chad Visionary · CEO | Speaker | Dreamer</div>
+        <div class="feed-shared-update-v2__description">
+          <span class="update-components-text"><span dir="ltr">I got rejected from 47 jobs.
+
+Then I got rejected from 48.
+
+But I didn't give up.
+
+I kept going.
+
+Today I'm humbled to announce I'm the CEO of my own company.
+
+Here's the thing: failure is just feedback.
+
+Agree?</span></span>
+        </div>
+        <div class="social">👍 1,204 · 381 comments</div>
+      </div>
+
+      <div class="feed-shared-update-v2" data-urn="urn:li:activity:2" data-testpost="genuine">
+        <div class="actor">Priya Sharma · Staff Engineer</div>
+        <span class="update-components-text">We just released version 2.3 of our open source PDF parser. It now handles scanned documents with OCR and is about 40% faster on large files. Changelog and benchmarks are in the repo, feedback welcome.</span>
+        <div class="social">👍 88 · 12 comments</div>
+      </div>
+
+      <div class="feed-shared-update-v2" data-urn="urn:li:activity:3" data-testpost="short">
+        <div class="actor">Sam Lee</div>
+        <span class="update-components-text">Hiring! DM me.</span>
+      </div>
+
+      <div class="feed-shared-update-v2" data-urn="urn:li:activity:4" data-testpost="ai">
+        <div class="actor">Growth Hacker · Helping founders 10x</div>
+        <span class="update-components-text">In today's fast-paced world, AI is a game-changer — and here's the thing.
+
+✅ It's not just a tool — it's a mindset.
+✅ It will unlock your potential.
+✅ Let that sink in.
+
+Thoughts? ♻️ Repost to help your network.</span>
+      </div>
+    </main>
+    <script>
+      // Simulate infinite scroll adding a post later.
+      setTimeout(() => {
+        const post = document.createElement("div");
+        post.className = "feed-shared-update-v2";
+        post.dataset.urn = "urn:li:activity:5";
+        post.dataset.testpost = "late-story";
+        post.innerHTML = `<div class="actor">Inspiring Leader</div>
+          <span class="update-components-text">Yesterday the janitor at our office taught me the most important leadership lesson of my career.
+
+He said: "Leaders eat last."
+
+I cried.
+
+Agree?</span>`;
+        document.getElementById("feed").append(post);
+      }, 1200);
+    </script>
+  </body>
+</html>

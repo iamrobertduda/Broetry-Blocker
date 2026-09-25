@@ -1,0 +1,44 @@
+{
+  "extName": { "message": "Broetry Blocker" },
+  "extDescription": { "message": "Detects AI slop and broetry in your LinkedIn feed and labels or hides it." },
+  "slopPercent": { "message": "$1% slop", "placeholders": { "p": { "content": "$1" } } },
+  "collapsedLabel": {
+    "message": "Slop removed: $1 ($2%)",
+    "placeholders": { "flavor": { "content": "$1" }, "p": { "content": "$2" } }
+  },
+  "showAnyway": { "message": "Show anyway" },
+  "flavor_broetry": { "message": "Broetry" },
+  "flavor_ai_generated": { "message": "AI-generated" },
+  "flavor_humblebrag": { "message": "Humblebrag" },
+  "flavor_engagement_bait": { "message": "Engagement bait" },
+  "flavor_fake_story": { "message": "Fake story" },
+  "flavor_hustle_guru": { "message": "Hustle guru" },
+  "flavor_generic": { "message": "Generic slop" },
+  "popupEnabled": { "message": "Slop detection" },
+  "popupMode": { "message": "What happens to slop?" },
+  "modeLabel": { "message": "Big red label" },
+  "modeLabelHint": { "message": "Stamp it AI SLOP and fade it out" },
+  "modeCollapse": { "message": "Collapse" },
+  "modeCollapseHint": { "message": "Shrink to one line, click to show" },
+  "modeHide": { "message": "Hide completely" },
+  "modeHideHint": { "message": "Gone. Never happened." },
+  "popupSensitivity": { "message": "Sensitivity" },
+  "sensitivityRelaxed": { "message": "Relaxed" },
+  "sensitivityNormal": { "message": "Normal" },
+  "sensitivityStrict": { "message": "Strict" },
+  "statsToday": { "message": "slop posts today" },
+  "statsTotal": { "message": "total" },
+  "quotaRemaining": {
+    "message": "$1 of $2 checks left today",
+    "placeholders": { "left": { "content": "$1" }, "limit": { "content": "$2" } }
+  },
+  "quotaExhausted": {
+    "message": "Daily limit reached. Back at $1.",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "serviceBusy": {
+    "message": "The service is at capacity today. Back at $1.",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "poweredBy": { "message": "Powered by Jev from TypeSafe AI" }
+}

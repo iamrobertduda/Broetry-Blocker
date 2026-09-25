@@ -1,0 +1,44 @@
+{
+  "extName": { "message": "Broetry Blocker" },
+  "extDescription": { "message": "Erkennt KI-Slop und Broetry im LinkedIn-Feed und markiert oder versteckt ihn." },
+  "slopPercent": { "message": "$1 % Slop", "placeholders": { "p": { "content": "$1" } } },
+  "collapsedLabel": {
+    "message": "Slop weggeräumt: $1 ($2 %)",
+    "placeholders": { "flavor": { "content": "$1" }, "p": { "content": "$2" } }
+  },
+  "showAnyway": { "message": "Trotzdem anzeigen" },
+  "flavor_broetry": { "message": "Broetry" },
+  "flavor_ai_generated": { "message": "KI-generiert" },
+  "flavor_humblebrag": { "message": "Humblebrag" },
+  "flavor_engagement_bait": { "message": "Engagement-Köder" },
+  "flavor_fake_story": { "message": "Märchenstunde" },
+  "flavor_hustle_guru": { "message": "Hustle-Guru" },
+  "flavor_generic": { "message": "Einheitsbrei" },
+  "popupEnabled": { "message": "Slop-Erkennung" },
+  "popupMode": { "message": "Was passiert mit Slop?" },
+  "modeLabel": { "message": "Großes rotes Label" },
+  "modeLabelHint": { "message": "AI-SLOP-Stempel drauf, Post wird blass" },
+  "modeCollapse": { "message": "Einklappen" },
+  "modeCollapseHint": { "message": "Nur eine Zeile, per Klick anzeigen" },
+  "modeHide": { "message": "Komplett ausblenden" },
+  "modeHideHint": { "message": "Weg. Nie passiert." },
+  "popupSensitivity": { "message": "Empfindlichkeit" },
+  "sensitivityRelaxed": { "message": "Locker" },
+  "sensitivityNormal": { "message": "Normal" },
+  "sensitivityStrict": { "message": "Streng" },
+  "statsToday": { "message": "Slop-Posts heute" },
+  "statsTotal": { "message": "insgesamt" },
+  "quotaRemaining": {
+    "message": "Noch $1 von $2 Checks heute",
+    "placeholders": { "left": { "content": "$1" }, "limit": { "content": "$2" } }
+  },
+  "quotaExhausted": {
+    "message": "Tageslimit erreicht. Weiter um $1.",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "serviceBusy": {
+    "message": "Der Dienst ist heute ausgelastet. Weiter um $1.",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "poweredBy": { "message": "Powered by Jev von TypeSafe AI" }
+}
