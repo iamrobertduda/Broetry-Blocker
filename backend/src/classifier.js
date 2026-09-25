@@ -21,16 +21,21 @@ export const FLAVORS = {
 const SLOP_QUESTION = noul(
   {
     task: "Decide whether this LinkedIn post is slop.",
+    // Style beats topic: without this, AI-written recaps of real events score as genuine.
+    judge_by:
+      "How the post is written, not what it is about. A post about a real event, product, job or result is still slop when it is written in chatbot, broetry or thought-leadership style.",
     slop_means: [
       "text that looks mass-produced by an AI writing assistant with little human editing",
+      "chatbot tells: bolded mini-headlines with emoji bullets, 'It's not X — it's Y' or 'X is no longer Y — it is Z' contrasts, em-dashes everywhere, neat lists of three abstract nouns, a punchy one-line moral at the end",
+      "event recaps, announcements or 'key takeaways' padded with buzzwords (strategic accelerator, capability shift, forward-thinking, game-changer) instead of concrete details",
       "formulaic 'broetry' with one sentence per line to fake depth",
       "engagement bait written to game the feed algorithm",
       "empty motivational or thought-leadership content with no concrete information",
       "made-up inspirational stories and humblebrags",
     ],
     not_slop_means: [
-      "specific news, results, links or data",
-      "a concrete job posting, event or product announcement written plainly",
+      "specific news, results, links or data, written plainly in the author's own voice",
+      "a concrete job posting, event or product announcement without buzzword padding",
       "a genuine question, opinion or experience with real details",
     ],
   },

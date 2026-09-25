@@ -3,7 +3,9 @@ importScripts("config.js");
 
 const api = globalThis.browser ?? globalThis.chrome;
 
-const CACHE_KEY = "resultCache";
+// Bump the version when the backend prompt changes, so stale scores are dropped.
+const CACHE_KEY = "resultCache.v2";
+const OLD_CACHE_KEYS = ["resultCache"];
 const CACHE_MAX = 3000;
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -185,6 +187,7 @@ api.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 });
 
 api.runtime.onInstalled.addListener(async () => {
+  await api.storage.local.remove(OLD_CACHE_KEYS);
   const { settings } = await api.storage.local.get("settings");
   if (!settings) await api.storage.local.set({ settings: BB_CONFIG.DEFAULT_SETTINGS });
 });
