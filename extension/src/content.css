@@ -11,29 +11,38 @@
   outline-offset: -3px;
 }
 
-.bb-mode-label > :not(.bb-banner) {
+/* LinkedIn wraps cards in display: contents, which ignores opacity; fade its children. */
+.bb-mode-label > :not(.bb-banner),
+.bb-mode-label > [data-display-contents] > * {
   opacity: 0.4;
   filter: grayscale(0.7);
   transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
-.bb-mode-label:hover > :not(.bb-banner) {
+.bb-mode-label:hover > :not(.bb-banner),
+.bb-mode-label:hover > [data-display-contents] > * {
   opacity: 1;
   filter: none;
 }
 
 .bb-banner {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 12px 16px;
-  background: repeating-linear-gradient(-45deg, #e0162b 0 14px, #c8102e 14px 28px);
+  /* Must end in --bb-goo so the melting edge is seamless. */
+  --bb-goo: #b80f27;
+  background: linear-gradient(180deg, #e2233a 0%, #cc1530 45%, var(--bb-goo) 80%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   border-radius: 8px 8px 0 0;
 }
 
 .bb-stamp {
+  position: relative;
   flex: none;
   padding: 4px 10px;
   border: 3px solid #fff;
@@ -64,6 +73,117 @@
   font-size: 15px;
   font-weight: 600;
   line-height: 1.3;
+}
+
+/* Melting banner: the stamp slams down and the banner drips over the post. */
+.bb-goo {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.bb-mode-label:hover .bb-goo {
+  opacity: 0.2;
+}
+
+.bb-goo-body {
+  fill: var(--bb-goo);
+}
+
+.bb-drip-stem,
+.bb-drip-tip,
+.bb-drip-drop {
+  transform-box: fill-box;
+}
+
+.bb-drip-stem {
+  transform-origin: 50% 0;
+}
+
+/* Some drips let go of a drop every few seconds; the goo filter necks it off. */
+.bb-drip-drop {
+  animation: bb-drop var(--every) cubic-bezier(0.5, 0, 0.9, 0.6) calc(var(--delay) + 1.6s) 3 both;
+}
+
+.bb-animate {
+  animation: bb-banner-in 0.22s ease-out both;
+}
+
+.bb-animate .bb-stamp {
+  animation: bb-slam 0.45s cubic-bezier(0.2, 1.25, 0.4, 1) 0.1s both;
+}
+
+.bb-animate .bb-goo-body {
+  animation: bb-ooze 0.6s cubic-bezier(0.3, 0, 0.2, 1) 0.35s both;
+}
+
+.bb-animate .bb-drip-stem {
+  animation: bb-stretch 1.8s cubic-bezier(0.45, 0, 0.2, 1) var(--delay) both;
+}
+
+.bb-animate .bb-drip-tip {
+  animation: bb-slide 1.8s cubic-bezier(0.45, 0, 0.2, 1) var(--delay) both;
+}
+
+.bb-animate .bb-drip-drop {
+  animation:
+    bb-slide 1.8s cubic-bezier(0.45, 0, 0.2, 1) var(--delay) both,
+    bb-drop var(--every) cubic-bezier(0.5, 0, 0.9, 0.6) calc(var(--delay) + 1.6s) 3;
+}
+
+.bb-shake {
+  animation: bb-shake 0.3s ease-out 0.4s;
+}
+
+@keyframes bb-banner-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bb-slam {
+  0% { opacity: 0; transform: scale(2.6) rotate(-14deg); filter: blur(3px); }
+  60% { opacity: 1; transform: scale(0.94) rotate(-3deg); filter: none; }
+  100% { transform: rotate(-4deg); }
+}
+
+@keyframes bb-ooze {
+  from { transform: translateY(-30px); }
+  to { transform: none; }
+}
+
+@keyframes bb-stretch {
+  from { transform: scaleY(0); }
+  to { transform: none; }
+}
+
+@keyframes bb-slide {
+  from { transform: translateY(calc(var(--len) * -1)); }
+  to { transform: none; }
+}
+
+@keyframes bb-drop {
+  0%, 35% { transform: none; }
+  55% { transform: translateY(14px) scale(1.08, 1.12); }
+  100% { transform: translateY(240px) scale(0.9, 1.2); }
+}
+
+@keyframes bb-shake {
+  0%, 100% { transform: none; }
+  30% { transform: translateY(3px); }
+  60% { transform: translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-banner,
+  .bb-banner *,
+  .bb-shake {
+    animation: none !important;
+  }
 }
 
 /* "Collapse" mode: the post shrinks to a one-line bar. */

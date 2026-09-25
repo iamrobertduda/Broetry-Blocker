@@ -5,12 +5,15 @@
 
   // LinkedIn changes its markup often; every selector has fallbacks.
   const POST_SELECTOR = [
+    // Current feed (2026): hashed class names, cards are list items keyed by update.
+    '[role="listitem"][componentkey^="update-card"]',
     "div.feed-shared-update-v2",
     '[data-urn^="urn:li:activity:"]',
     '[data-id^="urn:li:activity:"]',
     '[data-view-name="feed-full-update"]',
   ].join(",");
   const TEXT_SELECTOR = [
+    '[data-testid="expandable-text-box"]',
     ".update-components-text",
     ".feed-shared-update-v2__description",
     ".feed-shared-inline-show-more-text",
@@ -30,6 +33,7 @@
   const results = new WeakMap();
   const revealed = new WeakSet();
   const counted = new WeakSet();
+  const animated = new WeakSet();
   const attempts = new WeakMap();
   const byId = new Map();
   let nextId = 1;
@@ -66,6 +70,12 @@
     return Math.abs(h);
   }
 
+  // Small seeded PRNG so a post's slime looks the same every time it's drawn.
+  function seededRandom(seed) {
+    let state = hashString(seed) || 1;
+    return () => (state = (Math.imul(state, 1103515245) + 12345) >>> 0) / 2 ** 32;
+  }
+
   function roastFor(result, seed) {
     const lines = BB_ROASTS[lang][result.flavor] ?? BB_ROASTS[lang].genuine;
     return lines[hashString(seed) % lines.length];
@@ -82,8 +92,87 @@
     return flavor && flavor !== "genuine" ? t(`flavor_${flavor}`) : t("flavor_generic");
   }
 
-  function buildBanner(post, result) {
-    const banner = el("div", "bb-banner");
+  // The banner melts: SVG shapes run through a blur + alpha threshold ("goo")
+  // filter so drips neck and merge like liquid, with a specular pass for gloss.
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function svg(tag, attrs = {}) {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+    return node;
+  }
+
+  function ensureGooFilter() {
+    if (document.getElementById("bb-goo-filter")) return;
+    const defs = svg("svg", { width: 0, height: 0, "aria-hidden": "true" });
+    defs.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
+    const filter = svg("filter", {
+      id: "bb-goo-filter",
+      x: "-10%",
+      y: "-10%",
+      width: "120%",
+      height: "130%",
+      "color-interpolation-filters": "sRGB",
+    });
+    const light = svg("feSpecularLighting", {
+      in: "bump",
+      surfaceScale: 5,
+      specularConstant: 1.1,
+      specularExponent: 28,
+      "lighting-color": "#ffffff",
+      result: "spec",
+    });
+    light.append(svg("feDistantLight", { azimuth: 235, elevation: 48 }));
+    filter.append(
+      svg("feGaussianBlur", { in: "SourceGraphic", stdDeviation: 5, result: "blur" }),
+      svg("feColorMatrix", {
+        in: "blur",
+        values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10",
+        result: "goo",
+      }),
+      svg("feGaussianBlur", { in: "goo", stdDeviation: 2.5, result: "bump" }),
+      light,
+      svg("feComposite", { in: "spec", in2: "goo", operator: "in", result: "shine" }),
+      svg("feComposite", { in: "goo", in2: "shine", operator: "arithmetic", k2: 1, k3: 0.55 }),
+    );
+    defs.append(filter);
+    document.body.append(defs);
+  }
+
+  function buildGoo(random) {
+    ensureGooFilter();
+    const root = svg("svg", { class: "bb-goo", "aria-hidden": "true" });
+    const goo = svg("g", { class: "bb-goo-body", filter: "url(#bb-goo-filter)" });
+    // The lip: extends up under the banner so only its wavy lower edge shows.
+    goo.append(svg("rect", { x: "-5%", y: -40, width: "110%", height: 46 }));
+    for (let i = 0; i < 14; i++) {
+      goo.append(svg("circle", { cx: `${random() * 100}%`, cy: 5, r: (4 + random() * 7).toFixed(1) }));
+    }
+    const count = 6 + Math.floor(random() * 4);
+    for (let i = 0; i < count; i++) {
+      const width = 7 + random() * 11;
+      const length = 18 + random() ** 1.6 * 95;
+      const drip = svg("svg", { x: `${((i + 0.15 + random() * 0.7) / count) * 100}%`, overflow: "visible" });
+      drip.setAttribute("class", "bb-drip");
+      drip.style.setProperty("--len", `${length.toFixed(0)}px`);
+      drip.style.setProperty("--delay", `${(0.55 + random() * 0.9).toFixed(2)}s`);
+      drip.append(
+        svg("rect", { class: "bb-drip-stem", x: -width / 2, y: 0, width, height: length, rx: width / 2 }),
+        svg("circle", { class: "bb-drip-tip", cx: 0, cy: length, r: (width * 0.78).toFixed(1) }),
+      );
+      if (random() < 0.45) {
+        drip.append(svg("circle", { class: "bb-drip-drop", cx: 0, cy: length, r: (width * 0.62).toFixed(1) }));
+        drip.style.setProperty("--every", `${(3 + random() * 3).toFixed(2)}s`);
+      }
+      goo.append(drip);
+    }
+    root.append(goo);
+    return root;
+  }
+
+  function buildBanner(post, result, animate) {
+    const random = seededRandom(post.dataset.bbId + result.flavor);
+    const banner = el("div", animate ? "bb-banner bb-animate" : "bb-banner");
     banner.append(el("div", "bb-stamp", "AI SLOP"));
     const info = el("div", "bb-info");
     const percent = Math.round(result.slop * 100);
@@ -91,7 +180,7 @@
       el("div", "bb-meta", `${t("slopPercent", [String(percent)])} · ${flavorLabel(result.flavor)}`),
       el("div", "bb-roast", roastFor(result, post.dataset.bbId + result.flavor)),
     );
-    banner.append(info);
+    banner.append(info, buildGoo(random));
     return banner;
   }
 
@@ -114,7 +203,7 @@
   }
 
   function clear(post) {
-    post.classList.remove("bb-slop", "bb-mode-label", "bb-mode-collapse", "bb-mode-hide");
+    post.classList.remove("bb-slop", "bb-mode-label", "bb-mode-collapse", "bb-mode-hide", "bb-shake");
     for (const child of post.querySelectorAll(":scope > .bb-banner, :scope > .bb-collapsed")) child.remove();
     delete post.dataset.bbFlag;
   }
@@ -127,7 +216,13 @@
     const mode = revealed.has(post) ? "label" : settings.mode;
     post.dataset.bbFlag = mode;
     post.classList.add("bb-slop", `bb-mode-${mode}`);
-    if (mode === "label") post.prepend(buildBanner(post, result));
+    if (mode === "label") {
+      // Only the first appearance gets the full splat; redraws stay quiet.
+      const animate = !animated.has(post);
+      animated.add(post);
+      post.prepend(buildBanner(post, result, animate));
+      if (animate) post.classList.add("bb-shake");
+    }
     else if (mode === "collapse") post.prepend(buildCollapsedBar(post, result));
 
     if (!counted.has(post)) {
@@ -214,6 +309,7 @@
       done.add(item);
       results.set(item.post, { slop: r.slop, flavor: r.flavor });
       item.post.dataset.bbState = "done";
+      item.post.dataset.bbSlop = r.slop.toFixed(2);
       render(item.post);
     }
     const leftover = batch.filter((item) => !done.has(item));
@@ -237,17 +333,38 @@
   // -------------------------------------------------------------------------
   // Discovery
 
-  const visibility = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        // While disabled, keep watching so nothing is spent on quota.
-        if (!entry.isIntersecting || !settings.enabled) continue;
-        visibility.unobserve(entry.target);
-        enqueue(entry.target);
-      }
-    },
-    { rootMargin: "600px 0px" },
-  );
+  function onVisible(entries, observer) {
+    for (const entry of entries) {
+      // While disabled, keep watching so nothing is spent on quota.
+      if (!entry.isIntersecting || !settings.enabled) continue;
+      observer.unobserve(entry.target);
+      enqueue(entry.target);
+    }
+  }
+
+  // The feed scrolls inside its own container, which clips the viewport's
+  // rootMargin away. Observing relative to that container keeps the lookahead.
+  function scrollRoot(post) {
+    for (let node = post.parentElement; node && node !== document.body; node = node.parentElement) {
+      const { overflowY } = getComputedStyle(node);
+      if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) return node;
+    }
+    return null;
+  }
+
+  const observers = new Map();
+  const watchedBy = new WeakMap();
+
+  function watch(post) {
+    const root = scrollRoot(post);
+    let observer = observers.get(root);
+    if (!observer) {
+      observer = new IntersectionObserver(onVisible, { root, rootMargin: "600px 0px" });
+      observers.set(root, observer);
+    }
+    watchedBy.set(post, observer);
+    observer.observe(post);
+  }
 
   function scan() {
     for (const post of document.querySelectorAll(POST_SELECTOR)) {
@@ -255,7 +372,7 @@
       if (state && state !== "retry") continue;
       if (!isOutermostPost(post)) continue;
       post.dataset.bbState = "observed";
-      visibility.observe(post);
+      watch(post);
     }
     repairDecorations();
   }
@@ -278,8 +395,8 @@
       if (settings.enabled) {
         // Re-observing fires the callback for posts that are already on screen.
         for (const post of document.querySelectorAll('[data-bb-state="observed"]')) {
-          visibility.unobserve(post);
-          visibility.observe(post);
+          watchedBy.get(post)?.unobserve(post);
+          watch(post);
         }
       }
     });

@@ -6,9 +6,9 @@
     <style>
       body { font-family: sans-serif; background: #f4f2ee; margin: 0; }
       main { width: 555px; margin: 24px auto; display: grid; gap: 12px; }
-      .feed-shared-update-v2 { background: #fff; border-radius: 8px; box-shadow: 0 0 0 1px #ddd; }
+      .feed-shared-update-v2, [role="listitem"] { background: #fff; border-radius: 8px; box-shadow: 0 0 0 1px #ddd; }
       .actor { padding: 12px 16px 0; font-weight: 600; }
-      .update-components-text { display: block; padding: 8px 16px 16px; white-space: pre-line; }
+      .update-components-text, [data-testid="expandable-text-box"] { display: block; padding: 8px 16px 16px; white-space: pre-line; }
       .social { padding: 8px 16px; border-top: 1px solid #eee; color: #666; }
     </style>
   </head>
@@ -45,15 +45,16 @@ Agree?</span></span>
         <span class="update-components-text">Hiring! DM me.</span>
       </div>
 
-      <div class="feed-shared-update-v2" data-urn="urn:li:activity:4" data-testpost="ai">
+      <!-- Current LinkedIn markup: hashed classes, list items keyed by update. -->
+      <div role="listitem" componentkey="update-card-focusAbC123FeedType_MAIN_FEED" data-testpost="ai">
         <div class="actor">Growth Hacker · Helping founders 10x</div>
-        <span class="update-components-text">In today's fast-paced world, AI is a game-changer — and here's the thing.
+        <p componentkey="4f1c2a9e"><span tabindex="-1" data-testid="expandable-text-box">In today's fast-paced world, AI is a game-changer — and here's the thing.
 
 ✅ It's not just a tool — it's a mindset.
 ✅ It will unlock your potential.
 ✅ Let that sink in.
 
-Thoughts? ♻️ Repost to help your network.</span>
+Thoughts? ♻️ Repost to help your network.</span></p>
       </div>
     </main>
     <script>
